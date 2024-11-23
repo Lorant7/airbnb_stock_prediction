@@ -1,4 +1,5 @@
 data/*
 !data/.gitkeep
-model/wandb
-model/airbnb_stock_price_prediction
+notebooks/wandb
+notebooks/airbnb_stock_price_prediction
+notebooks/lightning_logs
