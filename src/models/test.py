@@ -39,10 +39,6 @@ def test_investments(y, yhat):
 
     return results
 
-# what I want to measure is 
-# how many times the algorithm invests when it should
-# how many times it invests when it should'test
-# how many times it doesn't invest when it should
 
 def test(model_file_name, graph = False):
     

@@ -19,10 +19,6 @@ from src.data import preprocess
 from src.config import RAW_DATA_DIR
 from src.config import PROCESSED_DATA_DIR
 from src.data.load import loadData
-# from ..data.preprocess import feature_selection
-# from ..config import RAW_DATA_DIR
-# from ..config import PROCESSED_DATA_DIR
-# from ..data.load import loadData
 
 import os
 
