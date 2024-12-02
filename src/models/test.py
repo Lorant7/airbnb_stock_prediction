@@ -1,18 +1,22 @@
 import torch
-from .base import StockDataModule
-from ..config import BATCH_SIZE
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).resolve().parents[2]  # Adjust the level as needed
+sys.path.append(str(project_root))
+
+from src.models.base import StockDataModule
+from src.config import BATCH_SIZE
+from src.visualization import graphs
+from src.models.base import LSTM
 
 
-model_file_name = '0h88ygww-graceful-haze-33.pth'
-path_to_model = '../../model/LSTM/artifacts/' + model_file_name
-tmodel = torch.load(path_to_model)
+make_confusion_matrix = True
+model_file_name = 'w36wilcc-olive-paper-9.pth'
 
-dm = StockDataModule(batch_size=BATCH_SIZE)
-test_loader = dm.test_dataloader()
-
-invest_prob = 0.8
+INVEST_PROB = 0.8
 def investment_thresholds(prob):
-    if prob > invest_prob:
+    if prob > INVEST_PROB:
         return 1
     return 0
 
@@ -40,7 +44,15 @@ def test_investments(y, yhat):
 # how many times it invests when it should'test
 # how many times it doesn't invest when it should
 
-def test():
+def test(model_file_name, graph = False):
+    
+    path_to_model = '../../model/LSTM/artifacts/' + model_file_name
+    tmodel = torch.load(path_to_model)
+
+    dm = StockDataModule(batch_size=BATCH_SIZE)
+    dm.setup('test')
+    test_loader = dm.test_dataloader()
+
     with torch.no_grad():
         totals = {
             "good_invest" : 0, # True positive
@@ -49,15 +61,23 @@ def test():
             "good_sell" : 0    # True negative
             }
         
+        all_y = []
+        all_yhat = []
 
         for batch in test_loader:
             y = batch[1]
+            all_y.extend(y.int().tolist())
+
             x = batch[0]
             yhat =  [investment_thresholds(prediction) for prediction in torch.sigmoid(tmodel(x))]
+            all_yhat.extend(yhat)
+
             results = test_investments(y.tolist(), yhat)
             totals['good_invest'] = totals['good_invest'] + results[0]
             totals['bad_invest'] = totals['bad_invest'] + results[1]
             totals['bad_sell'] = totals['bad_sell'] + results[2]
             totals['good_sell'] = totals['good_sell'] + results[3]
         
-        print(totals)
+        graphs.confusionMatrix(all_y, all_yhat, save = graph)
+
+test(model_file_name, graph = True)

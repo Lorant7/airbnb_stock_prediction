@@ -58,9 +58,11 @@ class StockDataModule(L.LightningDataModule):
         self.val_df = df.iloc[split_index2:split_index1]
         self.train_df = df.iloc[split_index1:]
         # print("saving dfs to : ", PROCESSED_DATA_DIR + "/train_df.csv")
-        self.train_df.to_csv(PROCESSED_DATA_DIR + "/train_df.csv", index=False)
-        self.test_df.to_csv(PROCESSED_DATA_DIR + "/test_df.csv", index=False)
-        self.val_df.to_csv(PROCESSED_DATA_DIR + "/val_df.csv", index=False)
+
+        if stage != 'test':
+            self.train_df.to_csv(PROCESSED_DATA_DIR + "/train_df.csv", index=False)
+            self.test_df.to_csv(PROCESSED_DATA_DIR + "/test_df.csv", index=False)
+            self.val_df.to_csv(PROCESSED_DATA_DIR + "/val_df.csv", index=False)
 
 
     def train_dataloader(self):
