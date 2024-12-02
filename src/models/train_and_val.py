@@ -5,9 +5,12 @@ from torch import nn
 import lightning as L
 
 import base
-from ..utils.wandb_logging import WandBLogger
-from .base import StockDataModule
-from ..config import BATCH_SIZE
+from src.utils.wandb_logging import WandBLogger
+from src.models.base import StockDataModule
+from src.config import BATCH_SIZE
+# from ..utils.wandb_logging import WandBLogger
+# from .base import StockDataModule
+# from ..config import BATCH_SIZE
 
 
 architecture = 'LSTM'
@@ -37,4 +40,4 @@ trainer = L.Trainer(max_epochs=epochs, logger = logger.logger)
 trainer.validate(model = lit_model, datamodule = dm)
 trainer.fit(model = lit_model, datamodule = dm)
 
-logger.endLog()
+logger.endLog(model)

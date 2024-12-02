@@ -31,7 +31,7 @@ class WandBLogger():
 
 
     def endLog(self, model):
-        model_path = '../model/' + self.architecture + '/artifacts/' + wandb.run.id + '-' + wandb.run.name+'.pth'
+        model_path = '../../model/' + self.architecture + '/artifacts/' + wandb.run.id + '-' + wandb.run.name+'.pth'
         torch.save(model, model_path)
 
         artifact = wandb.Artifact(wandb.run.id + '-' + wandb.run.name, type='model')

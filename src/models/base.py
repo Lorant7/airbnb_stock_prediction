@@ -8,10 +8,21 @@ import lightning as L
 from pytorch_lightning import LightningModule, LightningDataModule
 from scipy import stats
 
-from ..data.preprocess import feature_selection
-from ..config import RAW_DATA_DIR
-from ..config import PROCESSED_DATA_DIR
-from ..data.load import loadData
+import sys
+from pathlib import Path
+
+# Add the project root to sys.path
+project_root = Path(__file__).resolve().parents[2]  # Adjust the level as needed
+sys.path.append(str(project_root))
+
+from src.data import preprocess
+from src.config import RAW_DATA_DIR
+from src.config import PROCESSED_DATA_DIR
+from src.data.load import loadData
+# from ..data.preprocess import feature_selection
+# from ..config import RAW_DATA_DIR
+# from ..config import PROCESSED_DATA_DIR
+# from ..data.load import loadData
 
 import os
 
@@ -36,8 +47,8 @@ class StockDataModule(L.LightningDataModule):
     # Feature selection and engineering
     def setup(self, stage=None):
         loadData()
-        df = pd.read_csv(os.listdir(RAW_DATA_DIR)[-1])
-        feature_selection(df)
+        df = pd.read_csv(RAW_DATA_DIR + os.listdir(RAW_DATA_DIR)[-1])
+        preprocess.feature_selection(df)
 
         # Splitting the data into train, validation, and test
         split_index1 = int(df.shape[0] * 0.2)
@@ -46,7 +57,7 @@ class StockDataModule(L.LightningDataModule):
         self.test_df = df.iloc[:split_index2]
         self.val_df = df.iloc[split_index2:split_index1]
         self.train_df = df.iloc[split_index1:]
-
+        # print("saving dfs to : ", PROCESSED_DATA_DIR + "/train_df.csv")
         self.train_df.to_csv(PROCESSED_DATA_DIR + "/train_df.csv", index=False)
         self.test_df.to_csv(PROCESSED_DATA_DIR + "/test_df.csv", index=False)
         self.val_df.to_csv(PROCESSED_DATA_DIR + "/val_df.csv", index=False)

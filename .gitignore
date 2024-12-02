@@ -4,3 +4,5 @@ notebooks/wandb
 notebooks/airbnb_stock_price_prediction
 notebooks/lightning_logs
 model/*
+*.pyc
+__pycache__/
